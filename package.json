@@ -2,17 +2,14 @@
   "name": "school.project",
   "version": "1.0.0",
   "description": "School Website Project",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "test": "node index.js",
-    "start": "nodemon index.js",
-    "dev": "nodemon index.js"
+    "start": "node index.js",
+    "dev": "node index.js"
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "nodemon": "^2.0.16"
-  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",

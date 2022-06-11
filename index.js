@@ -9,7 +9,7 @@ const schemas = require("./Schema");
 const cors = require('cors');
 // Declaring Constants
 
-const DB = "mongodb://localhost:27017/schoolProject";
+const DB = "mongodb+srv://snips:snips@cluster0.hscsw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 const jwtKey = process.env.SASTA_JWT;
 const AUTHTOKEN = process.env.SASTA_KEY;
 app = express();
@@ -718,7 +718,7 @@ app.get("/api/deleteStudent", async(req,res) => {
 	var token = req.query.token;
 	// Token Validation Here
 	var tokenValid = true;
-	if(token!=process.env.SASTA_KEY){
+	if(token!=SASTA_KEY){
 		res.json({
 			message:"Invalid Authtoken"
 		});
