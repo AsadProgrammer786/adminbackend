@@ -7,16 +7,23 @@ require('dotenv').config();
 const mongoose = require("mongoose");
 const schemas = require("./Schema");
 const cors = require('cors');
+const path = require("path")
+const fs = require("fs");
+const xl = require('excel4node');
+const wb = new xl.Workbook();
+const ws = wb.addWorksheet('Student Data');
 // Declaring Constants
 
 const DB = "mongodb+srv://snips:snips@cluster0.hscsw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+// const DB = 'mongodb://localhost:27017/schoolProject';
 const jwtKey = process.env.SASTA_JWT;
 const AUTHTOKEN = process.env.SASTA_KEY;
 app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8081;
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cors());
+app.use(express.static('exports'))
 
 // Connecting to Database
 
@@ -33,6 +40,7 @@ const Message = new mongoose.model("Message", schemas.messageSchema);
 const Notice = new mongoose.model("Notice", schemas.noticeSchema);
 const student = new mongoose.model("student", schemas.studentSchema);
 const Teacher = new mongoose.model("Teacher", schemas.teacherSchema);
+const TeacherChat = new mongoose.model("adminchat", schemas.teacherIssueSchema);
 
 
 // Parameters validation function
@@ -238,7 +246,16 @@ app.get("/api/getMessage", async(req,res) => {
 app.get("/api/addNotice", async(req,res) => {
 	var notice = req.query.notice;
 	var p = [notice];
-	if(req.query.token!=AUTHTOKEN){
+	var token = req.query.token;
+	var tokenValid,role;
+	try{
+		var data = jwt.verify(token,jwtKey);
+		tokenValid = true;
+		role = data.role;
+	}catch(err){
+		tokenValid = false;
+	}
+	if(!tokenValid&&!role=="admin"){
 		res.json({
 			message:"Invalid Authtoken"
 		});
@@ -269,7 +286,16 @@ app.get("/api/addNotice", async(req,res) => {
 // 7 - Get Notice Endpoint
 
 app.get("/api/getNotice", async(req,res) => {
-	if(req.query.token!=AUTHTOKEN){
+	var token = req.query.token;
+	var tokenValid,role;
+	try{
+		var data = jwt.verify(token,jwtKey);
+		tokenValid = true;
+		role = data.role;
+	}catch(err){
+		tokenValid = false;
+	}
+	if(!tokenValid){
 		res.json({
 			message:"Invalid Authtoken"
 		});
@@ -293,7 +319,16 @@ app.get("/api/getNotice", async(req,res) => {
 app.get("/api/deleteNotice", async(req,res) => {
 	var id = req.query.id;
 	var p = [id];
-	if(req.query.token!=AUTHTOKEN){
+	var token = req.query.token;
+	var tokenValid,role;
+	try{
+		var data = jwt.verify(token,jwtKey);
+		tokenValid = true;
+		role = data.role;
+	}catch(err){
+		tokenValid = false;
+	}
+	if(!tokenValid&&!role=="admin"){
 		res.json({
 			message:"Invalid Authtoken"
 		});
@@ -316,13 +351,23 @@ app.get("/api/deleteNotice", async(req,res) => {
 	}
 });
 
+
 // 9 - Edit Notice Endpoint
 
 app.get("/api/editNotice", async(req,res) => {
 	var notice = req.query.notice;
 	var id = req.query.id;
 	var p = [notice,id];
-	if(req.query.token!=AUTHTOKEN){
+	var token = req.query.token;
+	var tokenValid,role;
+	try{
+		var data = jwt.verify(token,jwtKey);
+		tokenValid = true;
+		role = data.role;
+	}catch(err){
+		tokenValid = false;
+	}
+	if(!tokenValid&&!role=="admin"){
 		res.json({
 			message:"Invalid Authtoken"
 		});
@@ -740,7 +785,6 @@ app.get("/api/deleteStudent", async(req,res) => {
 // Update student Endpoint
 
 app.get("/api/updateStudentData", async(req,res) => {
-	console.log("wgwjgbwrgrg")
 	var admNo= req.query.admNo;
 	var cls= req.query.cls;
 	var sec= req.query.sec;
@@ -848,12 +892,19 @@ app.get("/api/updateStudentData", async(req,res) => {
 					punctuality:annualpunctuality,
 					coCirricular:annualcoCirricular
 			}}
-}) 
-		console.log(d)
-		res.send("ok")
+
+})
+var f = await student.find({admNo : admNo}); 
+		console.log(f)
+		res.json(
+			{
+				message: "yes",
+				newData : f
+			}
+		)
 	  }catch(err){
 		console.log(err);
-		res.json("no");
+		res.json({message:"no"});
 	  }
 	}
   });
@@ -1071,6 +1122,117 @@ app.get("/api/editTeacher", async(req, res) => {
 	}
 });
 
+app.get("/api/export", async(req,res)=>{
+	var token = req.query.token;
+	var tokenValid,role;
+	try{
+		var d = jwt.verify(token,jwtKey);
+		tokenValid = true;
+		role = d.role;
+	}catch(err){
+		tokenValid = false;
+	}
+	if(!tokenValid || !role=="admin"){
+		res.json({
+			message:"Invalid Token"
+		});
+	}else{
+		var fPath = `exports/${new Date().getTime()}.xlsx`;
+		const fileExists = async path => (await fs.promises.stat(path).catch(e => false));
+		if(await fileExists(fPath)){
+			fs.unlinkSync(fPath);
+		}
+		try{
+			var d = await student.find({});
+			var data = [];
+			d.forEach(function(st){
+				data.push({
+					admNo:st.admNo,
+					sName:st.sName,
+					cls:st.cls,
+					sec:st.sec,
+					fName:st.fName,
+					mName:st.mName,
+					fNum:st.fNum,
+					mNum:st.mNum,
+					dob:st.dob,
+					doa:st.doa,
+					house:st.house,
+					address:st.address,
+					halfpercentage:st.halfpercentage,
+					halfrank:st.halfrank,
+					annualpercentage:st.annualpercentage,
+					annualrank:st.annualrank
+				});
+			});
+			var headingColumnNames = ["admNo","sName","cls","sec","fName","mName","fNum","mNum","dob","doa","house","address","halfpercentage","halfrank","annualpercentage","annualrank"];
+			let headingColumnIndex = 1;
+			headingColumnNames.forEach(heading => {
+			    ws.cell(1, headingColumnIndex++)
+ 			       .string(heading)
+			});
+			let rowIndex = 2;
+			data.forEach( record => {
+		    let columnIndex = 1;
+		    Object.keys(record ).forEach(columnName =>{
+ 		       ws.cell(rowIndex,columnIndex++)
+  		          .string(record [columnName])
+ 	 		  });
+  			  rowIndex++;
+			}); 
+			wb.write(fPath);
+			var link = fPath;
+			res.json({
+				message:"Done",
+				link
+			});
+		}catch(err){
+			res.json({
+				message:"Error Occured",
+				error:err
+			});
+		}
+	}
+});
+
+app.get("/exports", async(req,res)=>{
+	var a = req.query.fileName;
+	res.sendFile(__dirname+'/exports/'+a);
+});
+
+app.get("/api/getAllTQuery", async(req, res) => {
+	var token = req.query.token;
+		try{
+			var td = jwt.verify(token, jwtKey);
+			var q = await TeacherChat.find({});
+			res.json({
+				message:"yes",
+				data : q.reverse()
+			});
+		}catch(err){
+			res.json({
+				message:"no"
+			});
+		}
+});
+
+
+app.get("/api/deleteTQuery", async(req, res) => {
+	var token = req.query.token;
+	var id = req.query.id;
+	try{
+		var td = jwt.verify(token, jwtKey);
+		var q = await TeacherChat.deleteOne({_id : id});
+		res.json({
+			message:"yes",
+			data : q
+		});
+	}catch(err){
+		res.json({
+			message:"no"
+		});
+	}
+});
 
 // Starting the server
 
