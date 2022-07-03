@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 require('dotenv').config();
 const mongoose = require("mongoose");
 const schemas = require("./Schema");
+// const admin = require("firebase-admin");
 const cors = require('cors');
 const path = require("path")
 const fs = require("fs");
@@ -13,7 +14,11 @@ const xl = require('excel4node');
 const wb = new xl.Workbook();
 const ws = wb.addWorksheet('Student Data');
 // Declaring Constants
+// var serviceAccount = require("./key.json");
 
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount)
+// });
 const DB = "mongodb+srv://snips:snips@cluster0.hscsw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 // const DB = 'mongodb://localhost:27017/schoolProject';
 const jwtKey = process.env.SASTA_JWT;
@@ -1082,6 +1087,7 @@ app.get("/api/editTeacher", async(req, res) => {
 	var phone = req.query.phone;
 	var subjects = req.query.subject.split(",");
 	var dob = req.query.dob;
+	var id = req.query.id;
 	var doj = req.query.doj;
 	var tcls = req.query.tcls.split(",");
 	var tokenValid,role;
@@ -1098,7 +1104,10 @@ app.get("/api/editTeacher", async(req, res) => {
 		});
 	}else{
 		try{
-			var newTeacher = Teacher.updateOne({_id:id}, {$set : {
+			var a = await Teacher.find({_id : id});
+			console.log(a);
+			console.log(id);
+			var newTeacher = await Teacher.updateOne({_id:id}, {$set : {
 				name : name,
 				imgLink : imgLink,
 				cls : cls,
@@ -1111,9 +1120,11 @@ app.get("/api/editTeacher", async(req, res) => {
 				doj : doj,
 				dob : dob
 			}});
-			console.log(newTeacher);
-			res.send("ok");
+			res.json({
+				message : "yes"
+			});
 		}catch(err){
+			console.log(err);
 			res.json({
 				message:"Error Occured",
 				error:err
@@ -1233,6 +1244,34 @@ app.get("/api/deleteTQuery", async(req, res) => {
 		});
 	}
 });
+
+
+// function sendNotif(to, payload, options) {
+// 	var users = to;
+// 	to.forEach(async(e) => {
+// 		await admin.messaging().sendToDevice(e, payload, options)
+// 		.then((res) => {
+// 			console.log(false);
+// 		})
+// 		.catch((err) => {
+// 			console.log(err);
+// 		})
+// 	}); 
+// }
+
+// sendNotif(['BC5Z_4nMW9KLvCAdghAa873nfY-ynN7WlSPakTTr1ytpBAjNl3CttpKCROYOm7DQGMJo7feDmLTHoyqdOy8iCsQ'], {
+// 	data : {
+// 		title : 'hi',
+// 		body : 'bye'
+// 	}
+// },
+// 	{
+// 		priority : "high",
+// 		timeToLive : 60 * 60 * 24
+// 	}
+// )
+
+
 
 // Starting the server
 
