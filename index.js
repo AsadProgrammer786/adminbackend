@@ -45,6 +45,7 @@ const Admin = new mongoose.model("Admin", schemas.adminSchema);
 const Message = new mongoose.model("Message", schemas.messageSchema);
 const Notice = new mongoose.model("Notice", schemas.noticeSchema);
 const student = new mongoose.model("student", schemas.studentSchema);
+const Notification = new mongoose.model("notification", schemas.notifSchema);
 const Teacher = new mongoose.model("Teacher", schemas.teacherSchema);
 const TeacherChat = new mongoose.model("adminchat", schemas.teacherIssueSchema);
 

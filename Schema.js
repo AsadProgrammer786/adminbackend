@@ -284,11 +284,21 @@ const teacherIssueSchema = new mongoose.Schema({
 	message : String
 });
 
+const notifSchema = new mongoose.Schema({
+	nId : String,
+	uId : String,
+	role : String,
+	cls : String,
+	name : String,
+	updateDate : String,
+});
+
 module.exports = {
 	adminSchema,
 	messageSchema,
 	noticeSchema,
 	studentSchema,
 	teacherSchema,
-	teacherIssueSchema
+	teacherIssueSchema,
+	notifSchema
 };
