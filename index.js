@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 const schemas = require("./Schema");
 // const admin = require("firebase-admin");
 const cors = require('cors');
+const notif = require("./notif");
 const path = require("path")
 const fs = require("fs");
 const xl = require('excel4node');
@@ -274,6 +275,7 @@ app.get("/api/addNotice", async(req,res) => {
 			time : (new Date().getHours())+":"+(new Date().getMinutes()),
 			notice : notice
 		});
+		publishNotif("NOTICE", "click to see", "all");
 		try{
 			await newNotice.save();
 			res.json({
@@ -1246,31 +1248,17 @@ app.get("/api/deleteTQuery", async(req, res) => {
 });
 
 
-// function sendNotif(to, payload, options) {
-// 	var users = to;
-// 	to.forEach(async(e) => {
-// 		await admin.messaging().sendToDevice(e, payload, options)
-// 		.then((res) => {
-// 			console.log(false);
-// 		})
-// 		.catch((err) => {
-// 			console.log(err);
-// 		})
-// 	}); 
-// }
 
-// sendNotif(['BC5Z_4nMW9KLvCAdghAa873nfY-ynN7WlSPakTTr1ytpBAjNl3CttpKCROYOm7DQGMJo7feDmLTHoyqdOy8iCsQ'], {
-// 	data : {
-// 		title : 'hi',
-// 		body : 'bye'
-// 	}
-// },
-// 	{
-// 		priority : "high",
-// 		timeToLive : 60 * 60 * 24
-// 	}
-// )
-
+const publishNotif = async(title, body, to) => {
+	if(to=="all") {
+		var ids = [];
+		var d = await Notification.find({});
+		await d.forEach((e) => {
+			ids.push(e['nId']);
+		});
+		notif.fetchNow(title, body, ids);
+	}
+}
 
 
 // Starting the server
