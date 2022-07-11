@@ -8,7 +8,8 @@ const fetchNow = (nTitle, nBod, ids) => {
     var fcmToken = ids;
     var nBody = {
         'notification': noti,
-        'registration_ids': fcmToken
+        'registration_ids': fcmToken,
+        'click_action': 'https://62c70fbecd22e215aa59c180--resplendent-basbousa-3bba99.netlify.app'
     };
     fetch('https://fcm.googleapis.com/fcm/send',{
         'method': 'POST',
