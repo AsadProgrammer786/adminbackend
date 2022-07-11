@@ -3,13 +3,13 @@ var fetch = require("cross-fetch");
 const fetchNow = (nTitle, nBod, ids) => {
     var noti = {
         'title': nTitle,
-        'body': nBod
+        'body': nBod,
+        'click_action': 'https://62c70fbecd22e215aa59c180--resplendent-basbousa-3bba99.netlify.app'
     };
     var fcmToken = ids;
     var nBody = {
         'notification': noti,
         'registration_ids': fcmToken,
-        'click_action': 'https://62c70fbecd22e215aa59c180--resplendent-basbousa-3bba99.netlify.app'
     };
     fetch('https://fcm.googleapis.com/fcm/send',{
         'method': 'POST',
