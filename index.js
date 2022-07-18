@@ -703,19 +703,7 @@ app.get("/api/addStudent", async(req,res) => {
 	}
 	else{
 		var newstudent = new student({
-			admNo,cls,sec,pass,sName,fName,mName,fNum,mNum,dob,doa,house,session,address,halfenglishRhymes,halfenglishConversation,halfenglishOral,halfenglishHandwriting,halfenglishWrittenOne,halfenglishWrittenTwo,halfhindiRhymes,halfhindiOral,halfhindiHandwriting,halfhindiWritten,halfsanskrit,halfmathsOral,halfmathsWritten,halfphysics,halfchemistry,halfbiology,halfhistory,halfgeography,halfcomputer,halfdrawing,halfgenKnowledge,halfmoralScience,halfattendence,halfpercentage,halfbehaviour,halfneatnessOfWork,halfpunctuality,halfcoCirricular,annualbehaviour,annualneatnessOfWork,annualpunctuality,annualcoCirricular,annualenglishRhymes,annualenglishConversation,annualenglishOral,annualenglishHandwriting,annualenglishWrittenOne,annualenglishWrittenTwo,annualhindiRhymes,annualhindiOral,annualhindiHandwriting,annualhindiWritten,annualsanskrit,annualmathsOral,annualmathsWritten,annualphysics,annualchemistry,annualbiology,annualhistory,annualgeography,annualcomputer,annualdrawing,annualgenKnowledge,annualmoralScience,annualattendence,annualpercentage,fee,
-                        halfmanners:{
-                                behaviour:halfbehaviour,
-                                neatnessOfWork:halfneatnessOfWork,
-                                punctuality:halfpunctuality,
-                                coCirricular:halfcoCirricular
-                        },
-                        annualmanners:{
-                                behaviour:annualbehaviour,
-                                neatnessOfWork:annualneatnessOfWork,
-                                punctuality:annualpunctuality,
-                                coCirricular:annualcoCirricular
-                        }
+			admNo,cls,sec,pass,sName,fName,mName,fNum,mNum,dob,doa,house,session,address,halfenglishRhymes,halfenglishConversation,halfenglishOral,halfenglishHandwriting,halfenglishWrittenOne,halfenglishWrittenTwo,halfhindiRhymes,halfhindiOral,halfhindiHandwriting,halfhindiWritten,halfsanskrit,halfmathsOral,halfmathsWritten,halfphysics,halfchemistry,halfbiology,halfhistory,halfgeography,halfcomputer,halfdrawing,halfgenKnowledge,halfmoralScience,halfattendence,halfpercentage,annualenglishRhymes,annualenglishConversation,annualenglishOral,annualenglishHandwriting,annualenglishWrittenOne,annualenglishWrittenTwo,annualhindiRhymes,annualhindiOral,annualhindiHandwriting,annualhindiWritten,annualsanskrit,annualmathsOral,annualmathsWritten,annualphysics,annualchemistry,annualbiology,annualhistory,annualgeography,annualcomputer,annualdrawing,annualgenKnowledge,annualmoralScience,annualattendence,annualpercentage,fee,
 		});
 		try{
 			student.find({admNo : admNo}, (err, data) => {
@@ -887,21 +875,9 @@ app.get("/api/updateStudentData", async(req,res) => {
 	}
 	else{
 	  try{
-	  	var d = await student.updateOne({admNo : admNo},{$set : {admNo,cls,sec,pass,sName,fName,mName,fNum,mNum,dob,doa,house,session,address,halfenglishRhymes,halfenglishConversation,halfenglishOral,halfenglishHandwriting,halfenglishWrittenOne,halfenglishWrittenTwo,halfhindiRhymes,halfhindiOral,halfhindiHandwriting,halfhindiWritten,halfsanskrit,halfmathsOral,halfmathsWritten,halfphysics,halfchemistry,halfbiology,halfhistory,halfgeography,halfcomputer,halfdrawing,halfgenKnowledge,halfmoralScience,halfattendence,halfpercentage,halfbehaviour,halfneatnessOfWork,halfpunctuality,halfcoCirricular,annualbehaviour,annualneatnessOfWork,annualpunctuality,annualcoCirricular,annualenglishRhymes,annualenglishConversation,annualenglishOral,annualenglishHandwriting,annualenglishWrittenOne,annualenglishWrittenTwo,annualhindiRhymes,annualhindiOral,annualhindiHandwriting,annualhindiWritten,annualsanskrit,annualmathsOral,annualmathsWritten,annualphysics,annualchemistry,annualbiology,annualhistory,annualgeography,annualcomputer,annualdrawing,annualgenKnowledge,annualmoralScience,annualattendence,annualpercentage,fee,
-			halfmanners:{
-					behaviour:halfbehaviour,
-					neatnessOfWork:halfneatnessOfWork,
-					punctuality:halfpunctuality,
-					coCirricular:halfcoCirricular
-			},
-			annualmanners:{
-					behaviour:annualbehaviour,
-					neatnessOfWork:annualneatnessOfWork,
-					punctuality:annualpunctuality,
-					coCirricular:annualcoCirricular
-			}}
+	  	var d = await student.updateOne({admNo : admNo},{$set : {admNo,cls,sec,pass,sName,fName,mName,fNum,mNum,dob,doa,house,session,address,halfenglishRhymes,halfenglishConversation,halfenglishOral,halfenglishHandwriting,halfenglishWrittenOne,halfenglishWrittenTwo,halfhindiRhymes,halfhindiOral,halfhindiHandwriting,halfhindiWritten,halfsanskrit,halfmathsOral,halfmathsWritten,halfphysics,halfchemistry,halfbiology,halfhistory,halfgeography,halfcomputer,halfdrawing,halfgenKnowledge,halfmoralScience,halfattendence,halfpercentage,annualenglishRhymes,annualenglishConversation,annualenglishOral,annualenglishHandwriting,annualenglishWrittenOne,annualenglishWrittenTwo,annualhindiRhymes,annualhindiOral,annualhindiHandwriting,annualhindiWritten,annualsanskrit,annualmathsOral,annualmathsWritten,annualphysics,annualchemistry,annualbiology,annualhistory,annualgeography,annualcomputer,annualdrawing,annualgenKnowledge,annualmoralScience,annualattendence,annualpercentage,fee,
 
-})
+}});
 var f = await student.find({admNo : admNo}); 
 		console.log(f)
 		res.json(
@@ -1267,3 +1243,4 @@ const publishNotif = async(title, body, to) => {
 app.listen(port, function(){
         console.log(`Server running on port ${port}`);
 });
+
