@@ -48,6 +48,7 @@ const student = new mongoose.model("student", schemas.studentSchema);
 const Notification = new mongoose.model("notification", schemas.notifSchema);
 const Teacher = new mongoose.model("Teacher", schemas.teacherSchema);
 const TeacherChat = new mongoose.model("adminchat", schemas.teacherIssueSchema);
+const ResSchema = new mongoose.model("resschema", schemas.resSchema);
 
 
 // Parameters validation function
@@ -1236,6 +1237,73 @@ const publishNotif = async(title, body, to) => {
 		notif.fetchNow(title, body, ids);
 	}
 }
+
+
+
+app.get("/api/getPrevRes", async(req, res) => {
+	var token = req.query.token;
+	var id = req.query.id;
+	try{
+		var td = jwt.verify(token, jwtKey);
+		var data = await ResSchema.find({});
+		if(!data.length == 0) {
+			res.json({
+				message : "yes",
+				data : data
+			});
+		}
+		else {
+			let gg = await new ResSchema({
+				half : 'no',
+				annual : 'no',
+				updateOn : `0`
+			}).save();
+			res.json({
+				message : "yes",
+				data : {
+					half : "no",
+					annual : "no",
+					halfUpdate : "0"
+				}
+			})
+		}
+	} catch(err){
+		res.json({
+			message : "err"
+		});
+	}
+});
+
+
+app.get("/api/updateRes", async(req, res) => {
+	var token = req.query.token;
+	var id = req.query.id;
+	var half = req.query.half;
+	var annual = req.query.annual;
+	annual = annual=="" || !annual?"no":annual;
+	half = half=="" || !half?"no":half;
+
+	try{
+		var td = jwt.verify(token, jwtKey);
+		var data = await ResSchema.find({});
+
+			var gg = await ResSchema.updateOne({_id : data[0]['_id']}, {$set : {
+				half : half,
+				annual : annual,
+				updateOn : `${new Date().getTime()}`
+			}})
+			console.log(gg);
+			res.json({
+				message : "yes",
+				data : data
+			});
+	} catch(err){
+		res.json({
+			message : "err"
+		});
+	}
+});
+
 
 
 // Starting the server

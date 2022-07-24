@@ -164,6 +164,12 @@ const notifSchema = new mongoose.Schema({
 	updateDate : String,
 });
 
+const resSchema = new mongoose.Schema({
+	half : String,
+	annual : String,
+	updateOn : String,
+});
+
 module.exports = {
 	adminSchema,
 	messageSchema,
@@ -171,5 +177,6 @@ module.exports = {
 	studentSchema,
 	teacherSchema,
 	teacherIssueSchema,
-	notifSchema
+	notifSchema,
+	resSchema
 };
